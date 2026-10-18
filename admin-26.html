@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>Admin — NH EXPOSER · NOT HUMANS</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{user-select:none;font-family:'Rajdhani',sans-serif;background:#f4f6fb;color:#0a0a1a;min-height:100vh;padding-bottom:60px;}
+input,textarea,select{user-select:text;}
+:root{--blue:#1a6fff;--blue-dark:#0d4fd4;--blue-pale:#e8f0ff;--black:#0a0a1a;--border:#d0d8f0;--gray:#f4f6fb;--text2:#4a5280;--red:#cc0000;--green:#00c853;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+#login-screen{position:fixed;inset:0;background:#fff;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box{width:100%;max-width:420px;background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:36px 28px;box-shadow:0 8px 40px rgba(26,111,255,.08);}
+.login-logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:22px;margin-bottom:6px;letter-spacing:1px;}
+.login-logo span{color:var(--blue);}
+.login-sub{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:var(--text2);margin-bottom:24px;}
+.fl{display:block;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;}
+.fi{width:100%;background:var(--gray);border:1.5px solid var(--border);border-radius:8px;padding:11px 14px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:600;color:var(--black);margin-bottom:12px;}
+.fi:focus{border-color:var(--blue);background:#fff;outline:none;}
+.login-btn{width:100%;background:var(--blue);color:#fff;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;padding:14px;border:none;border-radius:8px;margin-top:4px;cursor:pointer;}
+.err{background:#fff0f0;border:1px solid #ffd0d0;border-radius:8px;padding:10px 14px;font-family:'Orbitron',sans-serif;font-size:9px;color:#cc0000;margin-bottom:14px;display:none;}
+.login-hint{font-size:12px;color:var(--text2);text-align:center;margin-top:14px;line-height:1.45;}
+#app{display:none;}
+nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1.5px solid var(--border);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:14px;}
+.nav-logo span{color:var(--blue);}
+.role-pill{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;padding:5px 10px;border-radius:6px;background:rgba(255,198,26,.18);color:#b8860b;border:1px solid rgba(255,198,26,.35);}
+.logout-btn2{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;padding:6px 12px;border:1.5px solid var(--border);border-radius:6px;color:var(--text2);background:none;cursor:pointer;}
+.tab-bar{display:flex;overflow-x:auto;border-bottom:1.5px solid var(--border);background:#fff;padding:0 16px;scrollbar-width:none;}
+.tab{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;padding:12px 14px;border:none;border-bottom:2px solid transparent;color:var(--text2);background:none;cursor:pointer;white-space:nowrap;}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+.section{display:none;padding:16px;max-width:960px;margin:0 auto;}
+.section.active{display:block;}
+.card{background:#fff;border-radius:14px;border:1.5px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--gray);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+.card-header h2{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;}
+.card-body{padding:16px 18px;}
+.flabel{display:block;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text2);text-transform:uppercase;margin-bottom:6px;}
+.finput{width:100%;background:var(--gray);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:600;margin-bottom:12px;}
+.finput:focus{border-color:var(--blue);background:#fff;outline:none;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:560px){.fgrid{grid-template-columns:1fr;}}
+.ffull{grid-column:1/-1;}
+.btn-blue{background:var(--blue);color:#fff;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:12px 20px;border:none;border-radius:8px;cursor:pointer;}
+.btn-blue:disabled{opacity:.5;}
+.btn-ghost{background:none;border:1.5px solid var(--border);color:var(--text2);font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;padding:7px 14px;border-radius:6px;cursor:pointer;}
+.btn-red{background:#fff0f0;border:1px solid #ffd0d0;color:#cc0000;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;padding:7px 14px;border-radius:6px;cursor:pointer;}
+.btn-block{width:100%;}
+.badge{display:inline-flex;padding:3px 9px;border-radius:4px;font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;letter-spacing:1px;}
+.badge-green{background:rgba(0,200,83,.1);color:#00c853;border:1px solid rgba(0,200,83,.3);}
+.badge-red{background:#fff0f0;color:#cc0000;border:1px solid #ffd0d0;}
+.badge-blue{background:rgba(26,111,255,.12);color:#1a6fff;border:1px solid rgba(26,111,255,.25);}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.stat-mini{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px;text-align:center;}
+.stat-mini-val{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:var(--blue);}
+.stat-mini-label{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:1px;color:var(--text2);margin-top:4px;}
+.form-hint{font-size:12px;color:var(--text2);background:var(--blue-pale);border:1px solid rgba(26,111,255,.25);border-radius:8px;padding:10px 12px;margin-bottom:16px;line-height:1.45;}
+.form-hint b{color:var(--blue);font-family:'Orbitron',sans-serif;font-size:10px;}
+.form-hint.warn{background:#fff8e8;border-color:#ffd080;color:#7a5a00;}
+.form-hint.warn b{color:#b8860b;}
+.form-hint.bad{background:#fff0f0;border-color:#ffd0d0;color:#8a0000;}
+.form-hint.bad b{color:#cc0000;}
+.form-hint.ok{background:rgba(0,200,83,.08);border-color:rgba(0,200,83,.3);color:#0a6b2e;}
+.form-hint.ok b{color:#00c853;}
+.otp-code{font-family:var(--mono);font-size:22px;font-weight:700;letter-spacing:4px;color:var(--blue);background:var(--gray);border:1.5px dashed var(--border);border-radius:10px;padding:16px;text-align:center;margin:12px 0;cursor:pointer;word-break:break-all;}
+.reg-row{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;}
+.reg-top{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.reg-team{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:800;}
+.reg-id{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--text2);letter-spacing:1px;}
+.empty{text-align:center;padding:20px;font-family:'Orbitron',sans-serif;font-size:10px;color:var(--text2);letter-spacing:1px;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0a0a1a;color:#fff;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;padding:12px 20px;border-radius:8px;z-index:9999;opacity:0;transition:.3s;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.kv .k{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--text2);letter-spacing:1px;}
+.kv .v{font-family:var(--mono);font-size:11px;text-align:right;word-break:break-all;}
+code{font-family:var(--mono);font-size:11px;}
+</style>
+</head>
+<body>
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">NH <span>EXPOSER</span></div>
+    <div class="login-sub">ADMIN · FIREBASE ONLY · NO BACKEND</div>
+    <div class="err" id="loginErr"></div>
+    <label class="fl">Admin passkey</label>
+    <input class="fi" id="passkey" type="password" placeholder="NHADMINPASSKEY2026"/>
+    <div class="form-hint warn"><b>No API URL.</b> OTP goes to Firestore. Paste Firebase <b>Web</b> config below.</div>
+    <label class="fl">apiKey</label>
+    <input class="fi" id="loginApiKey" placeholder="AIza... from Firebase Web app"/>
+    <label class="fl">authDomain</label>
+    <input class="fi" id="loginAuthDomain" value="nh-checking.firebaseapp.com"/>
+    <label class="fl">projectId</label>
+    <input class="fi" id="loginProjectId" value="nh-checking"/>
+    <label class="fl">appId (optional)</label>
+    <input class="fi" id="loginAppId" placeholder="1:544563827235:web:..."/>
+    <button class="login-btn" id="btnLogin">UNLOCK CONSOLE</button>
+    <p class="login-hint">Default passkey: <b>NHADMINPASSKEY2026</b></p>
+  </div>
+</div>
+<div id="app">
+  <nav>
+    <div class="nav-logo">NH <span>EXPOSER</span></div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span class="role-pill">OWNER</span>
+      <button class="logout-btn2" id="btnLogout">LOGOUT</button>
+    </div>
+  </nav>
+  <div class="tab-bar">
+    <button class="tab active" data-tab="overview">OVERVIEW</button>
+    <button class="tab" data-tab="otp">OTP CODES</button>
+    <button class="tab" data-tab="list">OTP LIST</button>
+    <button class="tab" data-tab="reseller">RESELLERS</button>
+    <button class="tab" data-tab="settings">SETTINGS</button>
+  </div>
+  <section class="section active" id="sec-overview">
+    <div class="stats-row">
+      <div class="stat-mini"><div class="stat-mini-val" id="stFb">—</div><div class="stat-mini-label">FIREBASE</div></div>
+      <div class="stat-mini"><div class="stat-mini-val" id="stOtps">0</div><div class="stat-mini-label">ACTIVE OTPS</div></div>
+      <div class="stat-mini"><div class="stat-mini-val">FB</div><div class="stat-mini-label">NO BACKEND</div></div>
+    </div>
+    <div class="card"><div class="card-header"><h2>SETUP</h2></div><div class="card-body">
+      <div class="form-hint">1. Enable <b>Firestore</b> in Firebase<br/>2. Rules (test mode / allow accessOtps + appConfig write)<br/>3. Create OTP → enter code in app<br/>4. App must read same Firestore (backend-free APK)</div>
+      <button class="btn-ghost" id="btnTestFb">TEST FIRESTORE WRITE</button>
+      <div id="fbTestOut"></div>
+    </div></div>
+  </section>
+  <section class="section" id="sec-otp">
+    <div class="card"><div class="card-header"><h2>GENERATE OTP</h2></div><div class="card-body">
+      <div class="form-hint ok"><b>Firestore only</b> — collection <code>accessOtps</code></div>
+      <div class="fgrid">
+        <div><label class="flabel">Max uses</label><input class="finput" id="otpUses" type="number" value="1" min="1"/></div>
+        <div><label class="flabel">Expires (min)</label><input class="finput" id="otpMins" type="number" value="60" min="1"/></div>
+        <div class="ffull"><label class="flabel">Note</label><input class="finput" id="otpNote" placeholder="test"/></div>
+      </div>
+      <button class="btn-blue btn-block" id="btnCreateOtp">CREATE OTP</button>
+      <div id="otpResult"></div>
+    </div></div>
+    <div class="card"><div class="card-header"><h2>REVOKE</h2></div><div class="card-body">
+      <label class="flabel">OTP ID</label><input class="finput" id="revokeId"/>
+      <button class="btn-red" id="btnRevokeOtp">REVOKE</button>
+    </div></div>
+  </section>
+  <section class="section" id="sec-list">
+    <div class="card"><div class="card-header"><h2>OTP LIST</h2><button class="btn-ghost" id="btnReloadOtps">RELOAD</button></div>
+    <div class="card-body"><div id="otpList" class="empty">…</div></div></div>
+  </section>
+  <section class="section" id="sec-reseller">
+    <div class="card"><div class="card-header"><h2>RESELLER PROFILE</h2></div><div class="card-body">
+      <div class="fgrid">
+        <div><label class="flabel">ID</label><input class="finput" id="rsId" placeholder="reseller_alpha"/></div>
+        <div><label class="flabel">Quota / month</label><input class="finput" id="rsQuota" type="number" value="50"/></div>
+        <div><label class="flabel">Max uses</label><input class="finput" id="rsMaxUses" type="number" value="1"/></div>
+        <div><label class="flabel">Max expiry min</label><input class="finput" id="rsMaxMins" type="number" value="1440"/></div>
+        <div class="ffull"><label class="flabel">Note</label><input class="finput" id="rsNote"/></div>
+      </div>
+      <button class="btn-blue" id="btnSaveRs">SAVE</button>
+      <div id="rsOut"></div>
+      <div id="rsList" style="margin-top:14px;"></div>
+    </div></div>
+  </section>
+  <section class="section" id="sec-settings">
+    <div class="card"><div class="card-header"><h2>FIREBASE CONFIG</h2></div><div class="card-body">
+      <label class="flabel">apiKey</label><input class="finput" id="setApiKey"/>
+      <label class="flabel">authDomain</label><input class="finput" id="setAuthDomain"/>
+      <label class="flabel">projectId</label><input class="finput" id="setProjectId"/>
+      <label class="flabel">appId</label><input class="finput" id="setAppId"/>
+      <button class="btn-blue" id="btnSaveCfg">SAVE &amp; RELOAD</button>
+    </div></div>
+    <div class="card"><div class="card-header"><h2>CHANGE PASSKEY</h2></div><div class="card-body">
+      <label class="flabel">Current</label><input class="finput" id="pkCur" type="password"/>
+      <label class="flabel">New</label><input class="finput" id="pkNew" type="password"/>
+      <label class="flabel">Confirm</label><input class="finput" id="pkConf" type="password"/>
+      <button class="btn-blue" id="btnPk">UPDATE (SHA-256)</button>
+      <div id="pkOut"></div>
+    </div></div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module">
+const DEFAULT_PASSKEY='NHADMINPASSKEY2026';
+const LS_CFG='nh_expo_fb_cfg_v2', LS_SESS='nh_expo_fb_sess_v2';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);}
+async function sha256(text){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+function loadCfg(){try{return JSON.parse(localStorage.getItem(LS_CFG)||'{}');}catch{return{};}}
+function saveCfg(c){localStorage.setItem(LS_CFG,JSON.stringify(c));}
+let cfg=Object.assign({apiKey:'',authDomain:'nh-checking.firebaseapp.com',projectId:'nh-checking',appId:''},loadCfg());
+let fb={app:null,db:null,fs:null};
+function genCode(n=10){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';const b=crypto.getRandomValues(new Uint8Array(n));let o='';for(let i=0;i<n;i++)o+=a[b[i]%a.length];return o;}
+function uuid(){return crypto.randomUUID?crypto.randomUUID():'otp_'+[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function initFirebase(){
+  if(!cfg.apiKey||!cfg.projectId)throw new Error('apiKey + projectId required');
+  const V='11.0.2';
+  const [appMod,fsMod]=await Promise.all([
+    import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`),
+    import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`)
+  ]);
+  const app=appMod.getApps().length?appMod.getApps()[0]:appMod.initializeApp({
+    apiKey:cfg.apiKey,authDomain:cfg.authDomain||cfg.projectId+'.firebaseapp.com',projectId:cfg.projectId,appId:cfg.appId||undefined
+  });
+  fb.app=app;fb.db=fsMod.getFirestore(app);fb.fs=fsMod;
+}
+async function getPassHash(){try{const {doc,getDoc}=fb.fs;const s=await getDoc(doc(fb.db,'appConfig','adminPasskey'));if(s.exists()&&s.data().hash)return String(s.data().hash).toLowerCase();}catch(e){console.warn(e);}return null;}
+async function verifyPasskey(input){const h=await sha256(input.trim());const c=await getPassHash();if(c)return h===c;return h===await sha256(DEFAULT_PASSKEY);}
+function fillSettings(){
+  $('setApiKey').value=cfg.apiKey||'';$('setAuthDomain').value=cfg.authDomain||'';
+  $('setProjectId').value=cfg.projectId||'';$('setAppId').value=cfg.appId||'';
+  $('loginApiKey').value=cfg.apiKey||'';$('loginAuthDomain').value=cfg.authDomain||'nh-checking.firebaseapp.com';
+  $('loginProjectId').value=cfg.projectId||'nh-checking';$('loginAppId').value=cfg.appId||'';
+}
+function enterApp(){
+  $('login-screen').style.display='none';$('app').style.display='block';
+  $('stFb').textContent='OK';$('stFb').style.color='var(--green)';
+  fillSettings();loadOtpList();
+}
+$('btnLogin').onclick=async()=>{
+  const err=$('loginErr');err.style.display='none';
+  cfg.apiKey=$('loginApiKey').value.trim();
+  cfg.authDomain=$('loginAuthDomain').value.trim()||'nh-checking.firebaseapp.com';
+  cfg.projectId=$('loginProjectId').value.trim()||'nh-checking';
+  cfg.appId=$('loginAppId').value.trim();
+  saveCfg(cfg);
+  if(!$('passkey').value){err.textContent='ENTER PASSKEY';err.style.display='block';return;}
+  if(!cfg.apiKey||!cfg.projectId){err.textContent='APIKEY + PROJECT ID REQUIRED';err.style.display='block';return;}
+  try{await initFirebase();}catch(e){err.textContent='FIREBASE: '+e.message;err.style.display='block';return;}
+  if(!(await verifyPasskey($('passkey').value))){err.textContent='INVALID PASSKEY';err.style.display='block';return;}
+  localStorage.setItem(LS_SESS,JSON.stringify({at:Date.now()}));
+  enterApp();toast('UNLOCKED');
+};
+$('passkey').addEventListener('keydown',e=>{if(e.key==='Enter')$('btnLogin').click();});
+$('btnLogout').onclick=()=>{localStorage.removeItem(LS_SESS);location.reload();};
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    t.classList.add('active');$('sec-'+t.dataset.tab)?.classList.add('active');
+    if(t.dataset.tab==='list')loadOtpList();
+    if(t.dataset.tab==='reseller')loadResellers();
+  };
+});
+$('btnTestFb').onclick=async()=>{
+  const out=$('fbTestOut');
+  try{
+    const {doc,setDoc,serverTimestamp}=fb.fs;
+    await setDoc(doc(fb.db,'appConfig','_ping'),{t:serverTimestamp(),ok:true},{merge:true});
+    out.innerHTML='<div class="form-hint ok" style="margin-top:10px;"><b>WRITE OK</b></div>';toast('FIRESTORE OK');
+  }catch(e){out.innerHTML=`<div class="form-hint bad" style="margin-top:10px;"><b>FAILED</b> — ${esc(e.message)}<br/>Open Firestore rules.</div>`;}
+};
+$('btnCreateOtp').onclick=async()=>{
+  const btn=$('btnCreateOtp'),box=$('otpResult');btn.disabled=true;box.innerHTML='';
+  try{
+    const code=genCode(10),otpId=uuid(),maxUses=Number($('otpUses').value)||1,mins=Number($('otpMins').value)||60;
+    const note=$('otpNote').value.trim()||null,now=Date.now(),codeHash=await sha256(code.toUpperCase());
+    const {doc,setDoc,serverTimestamp}=fb.fs;
+    await setDoc(doc(fb.db,'accessOtps',otpId),{
+      otpId,codeHash,codePlain:code,maxUses,useCount:0,revoked:false,note,createdAt:now,
+      expiresAt:now+mins*60000,createdBy:'admin-panel',ts:serverTimestamp()
+    });
+    box.innerHTML=`<div class="form-hint ok" style="margin-top:14px;"><b>CREATED</b> — copy into app</div>
+      <div class="otp-code" id="otpCopy">${esc(code)}</div>
+      <div class="kv"><span class="k">OTPID</span><span class="v">${esc(otpId)}</span></div>
+      <div class="kv"><span class="k">EXPIRES</span><span class="v">${esc(new Date(now+mins*60000).toLocaleString())}</span></div>`;
+    $('otpCopy').onclick=async()=>{try{await navigator.clipboard.writeText(code);toast('COPIED');}catch{toast('COPY MANUALLY');}};
+    toast('OTP CREATED');loadOtpList();
+  }catch(e){box.innerHTML=`<div class="form-hint bad" style="margin-top:14px;"><b>FAILED</b> — ${esc(e.message)}</div>`;}
+  finally{btn.disabled=false;}
+};
+$('btnRevokeOtp').onclick=async()=>{
+  const id=$('revokeId').value.trim();if(!id)return toast('ENTER ID');
+  try{const {doc,updateDoc}=fb.fs;await updateDoc(doc(fb.db,'accessOtps',id),{revoked:true});toast('REVOKED');loadOtpList();}
+  catch(e){toast(e.message);}
+};
+async function loadOtpList(){
+  const el=$('otpList');el.innerHTML='<div class="empty">LOADING…</div>';
+  try{
+    const {collection,getDocs}=fb.fs;
+    const snap=await getDocs(collection(fb.db,'accessOtps'));
+    const rows=[];snap.forEach(d=>rows.push({id:d.id,...d.data()}));
+    rows.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    $('stOtps').textContent=String(rows.filter(r=>!r.revoked&&(r.useCount||0)<(r.maxUses||1)&&(!r.expiresAt||Date.now()<r.expiresAt)).length);
+    if(!rows.length){el.innerHTML='<div class="empty">NO OTPS</div>';return;}
+    el.innerHTML=rows.map(r=>{
+      const expired=r.expiresAt&&Date.now()>r.expiresAt;
+      const dead=r.revoked||expired||(r.useCount||0)>=(r.maxUses||1);
+      return `<div class="reg-row"><div class="reg-top"><div>
+        <div class="reg-team"><code>${esc(r.codePlain||'(no plain)')}</code></div>
+        <div class="reg-id">${esc(r.id)} · ${r.useCount||0}/${r.maxUses||1}</div></div>
+        <span class="badge ${dead?'badge-red':'badge-green'}">${r.revoked?'REVOKED':expired?'EXPIRED':'ACTIVE'}</span></div>
+        ${!r.revoked?`<button class="btn-red" style="margin-top:8px;" data-rev="${esc(r.id)}">REVOKE</button>`:''}</div>`;
+    }).join('');
+    el.querySelectorAll('[data-rev]').forEach(b=>b.onclick=()=>{$('revokeId').value=b.dataset.rev;$('btnRevokeOtp').click();});
+  }catch(e){el.innerHTML=`<div class="form-hint bad"><b>${esc(e.message)}</b></div>`;}
+}
+$('btnReloadOtps').onclick=loadOtpList;
+async function loadResellers(){
+  const el=$('rsList');
+  try{
+    const {collection,getDocs}=fb.fs;const snap=await getDocs(collection(fb.db,'resellerProfiles'));
+    const rows=[];snap.forEach(d=>rows.push({id:d.id,...d.data()}));
+    if(!rows.length){el.innerHTML='<div class="empty">NO PROFILES</div>';return;}
+    el.innerHTML=rows.map(r=>`<div class="reg-row"><div class="reg-top"><div class="reg-team">${esc(r.id)}</div>
+      <span class="badge badge-blue">QUOTA ${esc(r.otpQuota??'—')}</span></div></div>`).join('');
+  }catch(e){el.innerHTML=`<div class="form-hint bad"><b>${esc(e.message)}</b></div>`;}
+}
+$('btnSaveRs').onclick=async()=>{
+  const id=$('rsId').value.trim();if(!id)return toast('ENTER ID');
+  try{
+    const {doc,setDoc,serverTimestamp}=fb.fs;
+    await setDoc(doc(fb.db,'resellerProfiles',id),{
+      otpQuota:Number($('rsQuota').value)||0,maxUsesPerOtp:Number($('rsMaxUses').value)||1,
+      maxExpiryMinutes:Number($('rsMaxMins').value)||1440,note:$('rsNote').value.trim()||null,updatedAt:serverTimestamp()
+    },{merge:true});
+    $('rsOut').innerHTML='<div class="form-hint ok" style="margin-top:10px;"><b>SAVED</b></div>';toast('SAVED');loadResellers();
+  }catch(e){$('rsOut').innerHTML=`<div class="form-hint bad" style="margin-top:10px;"><b>${esc(e.message)}</b></div>`;}
+};
+$('btnSaveCfg').onclick=()=>{
+  cfg={apiKey:$('setApiKey').value.trim(),authDomain:$('setAuthDomain').value.trim(),projectId:$('setProjectId').value.trim(),appId:$('setAppId').value.trim()};
+  saveCfg(cfg);toast('RELOADING');setTimeout(()=>location.reload(),400);
+};
+$('btnPk').onclick=async()=>{
+  const out=$('pkOut');
+  try{
+    if(!(await verifyPasskey($('pkCur').value))){out.innerHTML='<div class="form-hint bad" style="margin-top:10px;"><b>Wrong current</b></div>';return;}
+    const neu=$('pkNew').value;if(neu.length<8||neu!==$('pkConf').value){out.innerHTML='<div class="form-hint bad" style="margin-top:10px;"><b>Mismatch / short</b></div>';return;}
+    const {doc,setDoc,serverTimestamp}=fb.fs;
+    await setDoc(doc(fb.db,'appConfig','adminPasskey'),{hash:await sha256(neu),algo:'SHA-256',updatedAt:serverTimestamp()},{merge:true});
+    out.innerHTML='<div class="form-hint ok" style="margin-top:10px;"><b>UPDATED</b></div>';toast('PASSKEY UPDATED');
+  }catch(e){out.innerHTML=`<div class="form-hint bad" style="margin-top:10px;"><b>${esc(e.message)}</b></div>`;}
+};
+(async()=>{
+  fillSettings();
+  try{
+    const s=JSON.parse(localStorage.getItem(LS_SESS)||'null');
+    if(s&&Date.now()-(s.at||0)<8*3600*1000&&cfg.apiKey){await initFirebase();enterApp();}
+  }catch{}
+})();
+</script>
+</body>
+</html>
